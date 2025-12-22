@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>witnessedeyes — Portfolio</title>
+  <meta name="description" content="witnessedeyes — software engineer, immersive frontends, systems architect" />
+
+  <!-- Tailwind CDN for quick styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Three.js for animated background and effects -->
+  <script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
+  <!-- Typed.js for hero typing -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+  <style>
+    :root {
+      --glass: rgba(255,255,255,0.04);
+      --accent: #7c5cff;
+    }
+    html,body,#bgCanvas{height:100%;margin:0;padding:0}
+    body{font-family:Inter,ui-sans-serif,system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg,#050617 0%, #0b0f1a 100%); color:#dbe7ff; -webkit-font-smoothing:antialiased;}
+    .glass { background: var(--glass); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.04); }
+    .card { transition: transform .34s cubic-bezier(.2,.9,.2,1), box-shadow .34s; will-change: transform; }
+    .card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 12px 40px rgba(2,6,23,.6); }
+    .reveal { opacity:0; transform: translateY(12px); transition: all .6s ease; }
+    .reveal.visible { opacity:1; transform: translateY(0); }
+    .lang-dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:8px; vertical-align:middle; }
+    .modal-backdrop { background: rgba(0,0,0,0.6); position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:60; }
+    .modal { max-width:900px; width:95%; max-height:80vh; overflow:auto; padding:20px; border-radius:12px; }
+    .pulse { animation: pulse 2.4s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+    .github-icon { filter: invert(1) brightness(1.2); }
+    /* small screens tweak */
+    @media (max-width: 640px) {
+      h1 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas for Three.js animated background -->
+  <canvas id="bgCanvas" class="fixed inset-0 w-full h-full z-0"></canvas>
+
+  <div class="relative z-10 min-h-screen flex flex-col">
+    <header class="w-full p-6 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="rounded-full w-10 h-10 bg-gradient-to-br from-indigo-500 to-pink-500 flex items-center justify-center font-semibold">W</div>
+        <div class="text-white font-semibold">witnessedeyes</div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <button id="themeToggle" class="px-3 py-2 rounded-md glass text-sm">Toggle Theme</button>
+        <a class="text-sm text-slate-300 hover:text-white" href="#projects">Projects</a>
+        <a class="text-sm text-slate-300 hover:text-white" href="#contact">Contact</a>
+      </div>
+    </header>
+
+    <main class="flex-1 flex items-center justify-center px-6">
+      <section class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <!-- Hero -->
+        <div class="space-y-6">
+          <h1 class="text-5xl font-extrabold leading-tight">
+            I build future-facing software that people love to use.
+          </h1>
+          <p id="typedIntro" class="text-indigo-300 text-lg"></p>
+
+          <div class="flex gap-3">
+            <a class="px-5 py-3 rounded-md bg-gradient-to-r from-indigo-600 to-purple-600 text-white" href="./resume.pdf" download>Download Resume</a>
+            <a class="px-5 py-3 rounded-md border border-indigo-400 text-indigo-200 hover:bg-neutral-800" href="#projects">View Projects</a>
+          </div>
+
+          <div class="mt-6 flex gap-4 items-center text-sm text-slate-300">
+            <img alt="github-stats" src="https://github-readme-stats.vercel.app/api?username=witnessedeyes&show_icons=true&theme=transparent" class="h-12 rounded" />
+            <div class="text-slate-300 text-sm">
+              Open to senior/lead roles • Remote / hybrid • GMT+YourTimezone
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile card -->
+        <aside class="glass p-6 rounded-2xl shadow-xl">
+          <div class="flex gap-4 items-center">
+            <div class="w-20 h-20 rounded-full bg-neutral-800 flex items-center justify-center text-2xl font-bold">W</div>
+            <div>
+              <div class="text-xl font-semibold">Your Full Name</div>
+              <div class="text-sm text-slate-300 mt-1">Systems Architect • Full-stack Engineer • WebGL</div>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <h4 class="text-sm font-medium text-slate-300">Top skills</h4>
+            <div class="grid grid-cols-2 gap-3 mt-3">
+              <div class="p-3 rounded bg-neutral-800/40">TypeScript</div>
+              <div class="p-3 rounded bg-neutral-800/40">React / Next.js</div>
+              <div class="p-3 rounded bg-neutral-800/40">Three.js / WebGL</div>
+              <div class="p-3 rounded bg-neutral-800/40">Docker & CI/CD</div>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <!-- Projects -->
+    <section id="projects" class="w-full py-12 bg-gradient-to-t from-transparent to-black/20">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-3xl font-bold">Selected & Recent Repositories</h2>
+          <div class="text-sm text-slate-300">Automatically fetched from GitHub</div>
+        </div>
+
+        <div id="repoGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="w-full py-12 px-6">
+      <div class="max-w-4xl mx-auto text-slate-300">
+        <h2 class="text-2xl font-bold mb-4">About me</h2>
+        <p>
+          I design and implement products with emphasis on clean architecture, observable systems, and delightful UX. I love bringing data to life with WebGL and building developer tools that speed workflows.
+        </p>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <footer id="contact" class="w-full bg-neutral-900/80 py-8 px-6 mt-8">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-6 justify-between items-center">
+        <div>
+          <h3 class="text-xl font-semibold">Contact</h3>
+          <p class="text-slate-300">Email: <a id="emailLink" href="mailto:YOUR_EMAIL@example.com" class="text-indigo-300">YOUR_EMAIL@example.com</a></p>
+          <p class="text-slate-400 text-sm mt-2">LinkedIn: <a href="YOUR_LINKEDIN_URL" class="text-indigo-300">Profile</a></p>
+        </div>
+
+        <form class="w-full md:w-2/5 bg-neutral-800 p-4 rounded" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+          <label class="block text-sm text-slate-300">Message</label>
+          <textarea required name="message" rows="3" class="w-full mt-2 p-2 rounded bg-neutral-900 text-slate-200"></textarea>
+          <div class="mt-3 text-right">
+            <button type="submit" class="px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-500">Send</button>
+          </div>
+        </form>
+      </div>
+    </footer>
+  </div>
+
+  <!-- README Modal -->
+  <div id="readmeModal" style="display:none" class="modal-backdrop">
+    <div class="modal glass">
+      <div class="flex justify-between items-start gap-4">
+        <h3 id="modalTitle" class="text-xl font-semibold"></h3>
+        <button id="closeModal" class="px-3 py-1 rounded bg-neutral-800">Close</button>
+      </div>
+      <pre id="modalContent" class="mt-4 whitespace-pre-wrap text-sm text-slate-200"></pre>
+    </div>
+  </div>
+
+  <script>
+    // ------------------------
+    // CONFIG — change these
+    // ------------------------
+    const GITHUB_USERNAME = 'witnessedeyes';    // your GitHub username
+    const PINNED = ['Jarvis_Omega'];            // repo names to pin or highlight
+    // Replace YOUR_EMAIL, YOUR_LINKEDIN, FORM ID and resume.pdf in the repo
+    // ------------------------
+
+    // Typed.js hero lines
+    new Typed('#typedIntro', {
+      strings: ["Systems architect • Full-stack engineer • WebGL tinkerer", "I design delightful developer tools and immersive frontends", "Open to senior & lead roles — remote/hybrid"],
+      typeSpeed: 40,
+      backSpeed: 20,
+      backDelay: 2200,
+      loop: true
+    });
+
+    // Three.js particle background (reduced for performance)
+    (function () {
+      const canvas = document.getElementById('bgCanvas');
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      const DPR = Math.min(2, window.devicePixelRatio || 1);
+      renderer.setPixelRatio(DPR);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 40;
+
+      // particles
+      const particles = new THREE.BufferGeometry();
+      const count = 900;
+      const positions = new Float32Array(count * 3);
+      const sizes = new Float32Array(count);
+      for (let i = 0; i < count; i++) {
+        positions[i*3] = (Math.random() - 0.5) * 120;
+        positions[i*3+1] = (Math.random() - 0.5) * 80;
+        positions[i*3+2] = (Math.random() - 0.5) * 120;
+        sizes[i] = Math.random() * 1.6 + 0.2;
+      }
+      particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      particles.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+      const material = new THREE.PointsMaterial({ color: 0x7c5cff, size: 0.45, transparent: true, opacity: 0.85, depthWrite: false });
+      const pointCloud = new THREE.Points(particles, material);
+      scene.add(pointCloud);
+
+      function animate(t) {
+        requestAnimationFrame(animate);
+        const time = t * 0.0004;
+        pointCloud.rotation.y = time * 0.4;
+        pointCloud.rotation.x = Math.sin(time) * 0.05;
+        renderer.render(scene, camera);
+      }
+      animate(0);
+
+      window.addEventListener('resize', () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+      });
+    })();
+
+    // IntersectionObserver for reveal animation
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.12 });
+
+    // Fetch repos and render cards
+    async function fetchAndRenderRepos() {
+      try {
+        const res = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`);
+        if (!res.ok) throw new Error('GitHub API error: ' + res.status);
+        const repos = await res.json();
+
+        // filter out forks and archived items; keep top updated, but keep pinned first
+        const filtered = repos.filter(r => !r.fork && !r.archived);
+        const pinned = PINNED.map(name => filtered.find(r => r.name === name)).filter(Boolean);
+        const others = filtered.filter(r => !PINNED.includes(r.name)).sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, 8);
+        const final = [...pinned, ...others];
+
+        const container = document.getElementById('repoGrid');
+        container.innerHTML = '';
+
+        for (const r of final) {
+          const card = document.createElement('div');
+          card.className = 'card reveal glass p-5 rounded-lg';
+          card.innerHTML = `
+            <div class="flex justify-between items-start gap-4">
+              <div>
+                <h3 class="font-semibold text-lg">${r.name}</h3>
+                <p class="text-sm text-slate-300 mt-2">${r.description || ''}</p>
+              </div>
+              <div class="text-sm text-slate-300 text-right">
+                <div>★ ${r.stargazers_count} <span style="opacity:.6">•</span> Forks ${r.forks_count}</div>
+                <div class="text-xs text-slate-400 mt-2">${new Date(r.updated_at).toLocaleDateString()}</div>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center justify-between gap-4">
+              <div class="text-xs text-slate-300">
+                ${r.language ? `<span class="lang-dot" style="background:${getLanguageColor(r.language)}"></span>${r.language}` : ''}
+              </div>
+              <div class="flex gap-3 items-center">
+                ${r.homepage ? `<a class="text-indigo-300 text-sm" href="${r.homepage}" target="_blank">Demo</a>` : ''}
+                <a class="text-indigo-300 text-sm" href="${r.html_url}" target="_blank">GitHub →</a>
+                <button class="text-slate-200 text-sm bg-neutral-800 px-3 py-1 rounded" data-owner="${r.owner.login}" data-repo="${r.name}" onclick="openReadme(this)">README</button>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+          io.observe(card);
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('repoGrid').innerHTML = `<div class="text-red-400">Failed to load repositories (rate limit or network). Try again later.</div>`;
+      }
+    }
+
+    // Language color helper (small curated map; not exhaustive)
+    function getLanguageColor(name){
+      const map = {
+        "JavaScript":"#f1e05a", "TypeScript":"#2b7489", "Python":"#3572A5", "Go":"#00ADD8", "C++":"#f34b7d",
+        "Java":"#b07219", "Rust":"#dea584", "HTML":"#e34c26", "CSS":"#563d7c", "Shell":"#89e051"
+      };
+      return map[name] || '#94a3b8';
+    }
+
+    // README preview (fetch readme via GitHub API, decode base64)
+    async function openReadme(button){
+      const owner = button.dataset.owner;
+      const repo = button.dataset.repo;
+      const modal = document.getElementById('readmeModal');
+      const title = document.getElementById('modalTitle');
+      const content = document.getElementById('modalContent');
+      title.textContent = `${owner}/${repo} README`;
+      content.textContent = 'Loading README...';
+      modal.style.display = 'flex';
+      try {
+        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/readme`);
+        if (!res.ok) throw new Error('No README or API error');
+        const json = await res.json();
+        const text = atob(json.content.replace(/\n/g,''));
+        content.textContent = text;
+      } catch (err) {
+        content.textContent = 'Unable to load README (may be missing or rate limited).';
+      }
+    }
+    document.getElementById('closeModal').addEventListener('click', () => {
+      document.getElementById('readmeModal').style.display = 'none';
+    });
+
+    // Theme toggle (simple body class swap)
+    const toggle = document.getElementById('themeToggle');
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      // You can extend to save preference to localStorage
+    });
+
+    // Init
+    fetchAndRenderRepos();
+
+    // Expose for inline onclick
+    window.openReadme = openReadme;
+  </script>
+</body>
+</html>
